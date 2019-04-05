@@ -192,6 +192,28 @@ body  { margin: 0;}
   width: 400px;
 }
 
+/* 2nd Screen */
+#funding-source-instructions {
+  position: absolute;
+  top: 86; left: 75;
+}
+
+#funding-source-instructions h1 {
+  font-size: 80px;
+  color: #FFFFFF;
+  line-height: 1;
+  font-weight: normal;
+  width: 600px;
+}
+
+#funding-source-instructions p {
+  font-size: 30px;
+  color: #37E8D7;
+  line-height: 42px;
+  width: 500px;
+}
+
+
 .primary-side {
   position: absolute;
   top: 175; left: 75;
@@ -628,7 +650,11 @@ body  { margin: 0;}
 .i18n-rtl .i18n-latin { text-align: right; }
 
 #networks { text-align: left; }
-.i18n-rtl #more-networks { direction: rtl; unicode-bidi: bidi-override; }
+.i18n-rtl #more-networks #more-funding-sources { direction: rtl; unicode-bidi: bidi-override; }
+
+#more-funding-sources .button {
+	color: #37E8D7;
+}
 
 .total .amount strong, #deposit-side .total-deposit strong {
   font-weight: 900;
@@ -870,6 +896,58 @@ body  { margin: 0;}
 .crypto-price {
   font-weight: bold;
 }
+
+/* Funding source Screen */
+#funding_sources {
+  position: absolute;
+  top: 86;
+  left: 732;
+  height: 550px;
+}
+
+#funding_sources > .active {
+  color: #ffffff;
+  background-color: #0e4160;   /* cobalt */
+}
+
+#funding_sources .button {
+  background-color: #0e4160;   /* cobalt */
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 25px;
+  padding: 18px 62px;
+  border-radius: 50px;
+  width: auto;
+  position: relative;
+  top: 50px;
+  left: 108px;
+  border: 4px solid #0e4160;
+}
+
+#funding_sources .button:active {
+  border: 4px solid #ffffff;
+  background-color: #37E8D7;  /* amazonite */
+  color: #ffffff;
+}
+
+.funding-source-button {
+  border-radius: 8px;
+  background-color: #37E8D7;
+  color: #0e4160;   /* cobalt */
+  padding: 32px;
+  width: 346px;
+  height: 30px;
+  font-size: 34px;
+  line-height: 1;
+  position: relative;
+  left: 0;
+  top: 0;
+  margin-bottom: 8px;
+  transition-property: background-color, border-color, color;
+  transition-duration: 0.5s;
+}
+
+
 
 /* WiFi Screen */
 #networks {

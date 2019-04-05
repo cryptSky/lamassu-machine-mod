@@ -46,6 +46,21 @@
         <section id="wifiListCancel" class="cancel"><img src="images/cancel.png" /></section>
       </section>
 
+
+      <section id="funding-source-viewport" class="viewport funding_source_state fiat-side" data-tr-section="funding_source">
+        <section class="main">
+          <section id="funding-source-instructions">
+            <h1 class="js-i18n">Funding Source</h1>
+            <p class="js-i18n">Your funds tier does not match the one mentioned during your registration on ModernTender. Please select the source of your funding</p>
+          </section>
+          <div id="funding_sources" class="i18n-latin">
+          </div>
+        </section>
+        <section id="fundingSourceListCancel" class="cancel"><img src="images/cancel.png" />
+        </section>
+      </section>
+
+
       <section class="viewport wifi_password_state" data-tr-section="wifi-password" id="wifi-password">
         <section id="wifi-keyboard" class="wifi-network pass-screen">
           <section class="pass-top">
@@ -256,6 +271,9 @@
             <span class="js-i18n js-context js-context-compliance">
             Please enter your mobile number for ID verification.
             </span>
+            <span class="js-i18n js-context js-context-account-compliance">
+            Please enter your mobile number which is associated with your ModernTender account.
+            </span>
           </div>
         </section>
         <section id="phone-keypad" class="keypad">
@@ -305,6 +323,21 @@
           </section>
         </section>
       </section>
+
+        <section class="viewport phone_number_not_registered_state fiat-side" data-tr-section="phone-number-not-registered">
+            <section class="info">
+                <h1 class="js-i18n">Try Again</h1>
+                <section class="description long">
+                    <p class="js-i18n">You either do not have account on ModernTender or you are not allowed to make transactions yet. If you have another
+                        phone you may have used, you can try redeeming again with that number.</p>
+                    <p class="js-i18n">If you're sure you have an account associated with this number and want us to allow transactions for you, please
+                        contact the operator.</p>
+                </section>
+                <section class="actions">
+                    <span class="button js-i18n" id="phone-number-not-registered-ok">Try Again</span>
+                </section>
+            </section>
+        </section>
 
       <section class="viewport unknown_phone_number_state fiat-side" data-tr-section="unknown-phone-number">
         <section class="info">
@@ -480,6 +513,77 @@
         <section id="security-code-cancel" class="cancel"><img src="images/cancel.png" /></section>
       </section>
 
+      <section class="viewport scan-id fiat-section ssn_state" data-tr-section="ssn">
+        <section class="main">
+          <h1 class="js-i18n">Social Security Number</h1>
+          <div class="instructions">
+            <span class="js-i18n">
+            In order to proceed with a transaction, enter your SSN here
+            </span>
+          </div>
+        </section>
+        <section id="ssn-keypad" class="keypad">
+          <section class="entry">
+            <div class="box full-box"></div>
+          </section>
+          <section class="keys">
+            <div class="row">
+              <div class="key numeric">1</div>
+              <div class="key numeric">2</div>
+              <div class="key numeric">3</div>
+            </div>
+            <div class="row">
+              <div class="key numeric">4</div>
+              <div class="key numeric">5</div>
+              <div class="key numeric">6</div>
+            </div>
+            <div class="row">
+              <div class="key numeric">7</div>
+              <div class="key numeric">8</div>
+              <div class="key numeric">9</div>
+            </div>
+            <div class="row">
+              <div class="key clear js-i18n">Clear</div>
+              <div class="key numeric">0</div>
+              <div class="key enter js-i18n">Enter</div>
+            </div>
+          </section>
+        </section>
+        <section id="ssn-cancel" class="cancel"><img src="images/cancel.png" /></section>
+      </section>
+
+      <section class="viewport bad_ssn_state fiat-side" data-tr-section="bad-ssn">
+        <section class="info">
+          <h1 class="js-i18n">Try Again</h1>
+          <section class="description">
+            <p class="js-i18n">
+              The SSN you entered was incorrect.
+            <p class="js-i18n">
+              Please make sure you are entering the nine digit number.
+            </p>
+          </section>
+          <section class="actions">
+            <span class="button js-i18n" id="bad-ssn-ok">Enter again</span>
+          </section>
+        </section>
+      </section>
+
+      <section class="viewport max_ssn_retries_state fiat-side" data-tr-section="max-ssn-retries">
+        <section class="info">
+          <h1 class="js-i18n">Oops, this isn't working</h1>
+          <section class="description">
+            <p class="js-i18n">
+              You've hit the maximum number of retries.
+            <p class="js-i18n">
+              Please contact the operator to sort this out, or try again later.
+            </p>
+          </section>
+          <section class="actions">
+            <span class="button js-i18n" id="max-ssn-retries-ok">OK</span>
+          </section>
+        </section>
+      </section>
+
       <section class="viewport verifying_id_state info" data-tr-section="verifying-id">
         <section class="main">
           <section class="top">
@@ -615,6 +719,9 @@
 
       <section class="viewport insert_bills_state digital-side" data-tr-section="insert-bills">
         <section class="main">
+          <div style="text-align: center; font-size:50px; color:#5F5F55; margin-top: 20px;">
+            Welcome<span id="mt_name" style="display: none"></span>
+          </div>
           <section class="primary-side">
             <h1 id="insert-bill" class="js-i18n">Insert a bill</h1>
             <p class="send-to-your-address"><span class="js-i18n-coins-to-address"></span><br/>
@@ -714,6 +821,30 @@
         </section>
       </section>
 
+
+      <section class="viewport account_create_state fiat-side cash-in-style" data-tr-section="account-create">
+        <section class="info">
+          <h1 class="js-i18n">ModernTender Account</h1>
+          <section class="description">
+            <p class="js-i18n">
+              If you'd like to make a larger purchase, we'll need to make sure you're you by asking
+              for your data.
+            </p>
+            <p>
+              By creating the account on ModernTender you will verify your identity once and will easily access the BTM later.
+            </p>
+            <p>
+              <strong class="js-i18n">Would you like to create an account on ModernTender?</strong>
+            </p>
+          </section>
+          <section class="actions" style="margin-top: 20px;">
+            <span class="button wide js-i18n register-start-verification">Yes</span>
+            <span class="button wide js-i18n js-no-inserted-notes proceed-sms-start">No, thanks</span>
+            <span class="button wide js-i18n js-no-inserted-notes send-coins-sms">No, cancel</span>
+          </section>
+        </section>
+      </section>
+
       <section class="viewport sms_verification_state fiat-side cash-in-style" data-tr-section="sms-verification">
         <section class="info">
           <h1 class="js-i18n">ID Verification</h1>
@@ -723,13 +854,17 @@
               for your mobile phone number. We'll then send you an SMS code.
             </p>
             <p>
+              You can also verify your identity using your ModernTender account without scanning the ID.
+            </p>
+            <p>
               <strong class="js-i18n">Would you like to insert more bills?</strong>
             </p>
           </section>
           <section class="actions">
             <span class="button wide js-i18n sms-start-verification">Yes, verify ID</span>
-            <span class="button wide js-i18n js-inserted-notes send-coins-sms">No, send coins</span>
+            <span class="button wide js-i18n sms-start-account-verification">Yes, use account</span>
             <span class="button wide js-i18n js-no-inserted-notes send-coins-sms">No, cancel</span>
+            <span class="button wide js-i18n js-inserted-notes send-coins-sms">No, send coins</span>
           </section>
         </section>
       </section>

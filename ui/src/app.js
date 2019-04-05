@@ -53,6 +53,7 @@ var websocket = null
 var wifiKeyboard = null
 var phoneKeypad = null
 var securityKeypad = null
+var ssnKeypad = null
 var previousState = null
 var onSendOnly = false
 var buttonActive = true
@@ -61,6 +62,8 @@ let currentCryptoCode = null
 
 var BRANDON = ['ca', 'cs', 'da', 'de', 'en', 'es', 'et', 'fi', 'fr', 'hr',
   'hu', 'it', 'lt', 'nb', 'nl', 'pl', 'pt', 'ro', 'sl', 'sv', 'tr']
+
+const fundingSourceList = ['Salary','Savings','Pension','Capital Gains','Business Proceeds','Bank Loan','Personal Loan','Other']
 
 function connect () {
   console.log(`ws://${HOST}:${PORT}/`)
@@ -89,6 +92,7 @@ function buttonPressed (button, data) {
   var res = {button: button}
   if (data || data === null) res.data = data
   if (websocket) websocket.send(JSON.stringify(res))
+
 }
 
 function processData (data) {
@@ -115,6 +119,15 @@ function processData (data) {
   if (data.cryptoCode) translateCoin(data.cryptoCode)
   if (data.tx && data.tx.cashInFee) setFixedFee(data.tx.cashInFee)
   if (data.terms) setTermsScreen(data.terms)
+
+  setFundingSourceList(0)
+
+  if (data.name) {
+    $('#mt_name').text(', ' + data.name)
+    $('#mt_name').show()
+  } else {
+    $('#mt_name').hide()
+  }
 
   if (data.context) {
     $('.js-context').hide()
@@ -166,6 +179,17 @@ function processData (data) {
       securityKeypad.activate()
       setState('security_code')
       break
+
+
+    case 'setFundingSource':
+      setState('funding_source')
+      break
+
+    case 'setSSN':
+      ssnKeypad.activate()
+      setState('ssn')
+      break
+
     case 'scanned':
       setState('insert_bills')
       break
@@ -229,6 +253,9 @@ function processData (data) {
     case 'smsVerification':
       smsVerification(data.threshold)
       break
+    case 'accountCreate':
+      accountCreate(data.threshold)
+      break
     case 'blockedCustomer':
       blockedCustomer()
       break
@@ -240,6 +267,15 @@ function processData (data) {
 function smsVerification (threshold) {
   console.log('sms threshold to be displayed', threshold)
   setScreen('sms_verification')
+}
+
+function accountCreate(threshold) {
+  console.log('sms threshold to be displayed', threshold)
+  setScreen('account_create')
+}
+
+function registerUser() {
+  return setScreen('register_user')
 }
 
 function blockedCustomer () {
@@ -340,6 +376,11 @@ $(document).ready(function () {
     buttonPressed('securityCode', result)
   })
 
+  ssnKeypad = new Keypad('ssn-keypad', {type: 'ssn'}, function (result) {
+    if (currentState !== 'ssn') return
+    buttonPressed('sendSSN', result)
+  })
+
   // buffers automatically when created
   confirmBeep = new Audio('sounds/Confirm8-Bit.ogg')
 
@@ -382,6 +423,25 @@ $(document).ready(function () {
     buttonPressed('wifiConnect', {pass: pass, ssid: ssid, rawSsid: rawSsid})
   })
 
+  var fundingSourceButtons = document.getElementById('funding_sources')
+  touchEvent(fundingSourceButtons, function (e) {
+    var target = $(e.target)
+    if (target.attr('id') === 'more-funding-sources') {
+      moreFundingSources()
+    } else {
+      var funingSourceButton = target.closest('.funding-source-button')
+      $('#funding_source > .active').removeClass('active')
+      funingSourceButton.addClass('active')
+      window.setTimeout(function () { funingSourceButton.removeClass('active') }, 1000)
+      var fsdata = funingSourceButton.text()
+
+      if (fsdata) {
+        buttonPressed('registerFundingSource',
+          {fundingSource: fsdata})
+      }
+    }
+  })
+
   var sendCoinsButton = document.getElementById('send-coins')
   touchEvent(sendCoinsButton, function () {
     setState('sending_coins')
@@ -400,6 +460,8 @@ $(document).ready(function () {
 
   setupImmediateButton('wifiPassCancel', 'cancelWifiPass')
   setupImmediateButton('wifiListCancel', 'cancelWifiList')
+  setupImmediateButton('fundingSourceListCancel', 'cancelFundingSource')
+
   setupImmediateButton('scanCancel', 'cancelScan')
   setupImmediateButton('completed_viewport', 'completed')
   setupImmediateButton('withdraw_failure_viewport', 'completed')
@@ -420,6 +482,8 @@ $(document).ready(function () {
     phoneKeypad.deactivate.bind(phoneKeypad))
   setupImmediateButton('security-code-cancel', 'cancelSecurityCode',
     securityKeypad.deactivate.bind(securityKeypad))
+  setupImmediateButton('ssn-cancel', 'cancelSSN',
+    ssnKeypad.deactivate.bind(ssnKeypad))
   setupButton('id-verification-failed-ok', 'idVerificationFailedOk')
   setupButton('id-scan-failed-ok', 'idVerificationFailedOk')
   setupButton('id-code-failed-retry', 'idCodeFailedRetry')
@@ -434,8 +498,14 @@ $(document).ready(function () {
   setupButton('out-of-cash-ok', 'idle')
 
   setupButton('bad-phone-number-ok', 'badPhoneNumberOk')
+  setupButton('phone-number-not-registered-ok', 'phoneNumberNotRegisteredOk')
+
   setupButton('bad-security-code-ok', 'badSecurityCodeOk')
   setupButton('max-phone-retries-ok', 'maxPhoneRetriesOk')
+
+  setupButton('bad-ssn-ok', 'badSSNOk')
+  setupButton('max-ssn-retries-ok', 'maxSSNRetriesOk')
+
   setupButton('redeem-later-ok', 'idle')
   setupButton('pre-receipt-ok', 'fiatReceipt')
   setupButton('fiat-error-ok', 'idle')
@@ -457,6 +527,8 @@ $(document).ready(function () {
 
   $('.coin-redeem-button').click(() => buttonPressed('redeem'))
   $('.sms-start-verification').click(() => buttonPressed('smsCompliance'))
+  $('.sms-start-account-verification').click(() => buttonPressed('smsCompliance', {type: "account"}))
+  $('.register-start-verification').click(() => buttonPressed('registerCompliance'))
   $('.send-coins-sms').click(() => buttonPressed('finishBeforeSms'))
 
   $('.change-language').mousedown(() => {
@@ -507,6 +579,7 @@ function targetButton (element) {
   var special = classList.contains('button') ||
     classList.contains('circle-button') ||
     classList.contains('wifi-network-button') ||
+    classList.contains('funding-source-button') ||
     classList.contains('square-button')
   if (special) { return element }
   return targetButton(element.parentNode)
@@ -629,6 +702,41 @@ function setWifiList (recs, requestedPage) {
   if (recs.length > 4) {
     networks.append(button)
   }
+}
+
+function setFundingSourceList (requestedPage) {
+  var fundingSources = $('#funding_sources')
+
+  var page = requestedPage
+  var offset = page * 4
+  if (offset > fundingSourceList.length - 1) {
+    offset = 0
+    page = 0
+  }
+  $('#more-funding-sources').css({'display': 'none'})
+  fundingSources.empty()
+  fundingSources.data('page', page)
+
+  var remainingCount = fundingSourceList.length - offset
+  var len = Math.min(remainingCount, 4)
+  for (var i = 0; i < len; i++) {
+    var rec = fundingSourceList[i + offset]
+
+    var html = '<div class="funding-source-button">' +
+      '<span class="ssid" data-raw-funding-source="' + rec + '" data-fs="' + rec + '">' + rec + '</span>'
+    fundingSources.append(html)
+  }
+  var moreTxt = locale.translate('MORE').fetch()
+  var button = '<span display="inline-block" id="more-funding-sources" class="button"  style="color: #37E8D7;">' + moreTxt + '</span>'
+  if (offset + 4 < fundingSourceList.length) {
+    fundingSources.append(button)
+  }
+}
+
+function moreFundingSources () {
+  var fundingSources = $('#funding_sources')
+  var page = fundingSources.data('page')
+  setFundingSourceList(page + 1)
 }
 
 /**
